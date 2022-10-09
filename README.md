@@ -1,6 +1,6 @@
 # AstroPC
 
-Setup of a Astro-Intel-Nuc based on the idea of Astroberry (www.astroberry.io)
+Setup of a Odriod M1 based on the idea of Astroberry (www.astroberry.io)
 
 ## Installation
 

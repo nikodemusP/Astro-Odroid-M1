@@ -18,7 +18,7 @@ sudo apt-get upgrade
 
 ### Enable SSH Access (if not exists)
 
-````
+```
 sudo apt install -y openssh-server
 sudo systemctl enable ssh
 sudo systemctl start ssh
@@ -143,7 +143,7 @@ sudo systemctl enable --now tigervncserver@:2.service
 sudo systemctl start tigervncserver@:2.service
 ```
 
-### NoVNC
+### NoVNC, indiweb and other web-tools
 
 ```
 # provide the www-directories
@@ -184,7 +184,7 @@ sudo rm /etc/nginx/sites-enabled/default
 
 ### Create a Hotspot
 ```
-sudo cp etc/NetworkManager/system-connections/Hotspot.nmconnection /etc/NetworkManager/system-connections/Hotspot.nmconnection
+sudo cp etc/NetworkManager/system-connections/Hotspot.nmconnection /etc/NetworkManager/system-connections/AstrOdroid-Hotspot.nmconnection
 ```
 
 ### Install and provide additional astronomy.net-files

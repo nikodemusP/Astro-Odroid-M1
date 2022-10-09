@@ -4,17 +4,32 @@ Setup of a Astro-Intel-Nuc based on the idea of Astroberry (www.astroberry.io)
 
 ## Installation
 
-For the base linux installation I used the Linux Mint 21 Cinnamon Edition (Ubuntu 22.04 LTS).
+For the base linux installation I used the XUbuntu-Desktop (Ubuntu 22.04 LTS).
 
-Hostname: astropc
-User: astropc
+Hostname: astrodroid
+User: astrodroid
 
 ### Update the System
 
 ```
 sudo apt-get update
 sudo apt-get upgrade
+```
+
+### Enable SSH Access (if not exists)
+
 ````
+sudo apt install -y openssh-server
+sudo systemctl enable ssh
+sudo systemctl start ssh
+```
+
+### Base-Tools
+
+```
+sudo apt install -y software-properties-common git
+```
+
 
 ### Add Repository-Keys
 
@@ -22,6 +37,7 @@ sudo apt-get upgrade
 # Key for CCDciel
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 8B8B57C1AA716FC2
 sudo sh -c "echo deb http://www.ap-i.net/apt unstable main > /etc/apt/sources.list.d/skychart.list"
+sudo cp /etc/apt/trusted.gpg /etc/apt/trusted.gpg.d/
 
 # Key for Indi
 sudo apt-add-repository ppa:mutlaqja/ppa
@@ -30,30 +46,13 @@ sudo apt-add-repository ppa:mutlaqja/ppa
 sudo add-apt-repository ppa:pch/phd2
 ```
 
-Please keep in mind with Debian 11 the apt-key handling has to be changed. If the add-apt-repository
-could not handle the new keys, you have to adapt the source-files and gpg-keys
-
-```
-# copy the key file
-sudo cp /etc/apt/trusted.gpg /usr/share/keyrings/ubuntu_ppa.gpg
-```
-
-Change /etc/apt/sources.list.d/pch-phd2-jammy.list
-```
-deb [signed-by=/usr/share/keyrings/ubuntu_ppa.gpg] http://ppa.launchpad.net/pch/phd2/ubuntu jammy main
-# deb-src http://ppa.launchpad.net/pch/phd2/ubuntu jammy main
-```
-
-Change /etc/apt/sources.list.d/mutlaqja-ppa-jammy.list
-```
-deb [signed-by=/usr/share/keyrings/ubuntu_ppa.gpg] http://ppa.launchpad.net/mutlaqja/ppa/ubuntu jammy main
-# deb-src http://ppa.launchpad.net/mutlaqja/ppa/ubuntu jammy main
-```
 
 ### Install all packages
 
 ```
 # base packages
+sudo apt-get update
+
 sudo apt install -y tigervnc-standalone-server \
                tigervnc-common \
                tigervnc-xorg-extension \
@@ -61,7 +60,7 @@ sudo apt install -y tigervnc-standalone-server \
                dnsmasq-base \
                novnc \
                nginx \
-               openssh-server \
+               xrdp \
                libnginx-mod-http-auth-pam \
                libnginx-mod-http-dav-ext \
                libnginx-mod-http-echo \
@@ -78,10 +77,10 @@ sudo apt install -y tigervnc-standalone-server \
                python3-ephem \
                python3-pip \
                python3-gevent-websocket \
-               python3-bottle \
-               software-properties-common \
-               git
-               
+               python3-bottle
+```
+
+```          
 # astronomy related ones
 sudo apt install -y indi-full \
                     kstars-bleeding \
@@ -94,12 +93,13 @@ sudo apt install -y indi-full \
 sudo pip3 install gps3
 ```
 
-### Enable SSH Access
+### Disable the automatic boot into the gui
 
 ```
-sudo systemctl enable ssh
-sudo systemctl start ssh
+# do not start the GUI any more
+sudo systemctl set-default multi-user.target
 ```
+
 
 ### Setup Virtual GPS
 ```
@@ -133,14 +133,14 @@ sudo systemctl set-default multi-user.target
 
 # provide the tigervnc configuration
 sudo cp etc/tigervnc/* /etc/tigervnc/
-printf "astropc\nastropc\nn\n" | vncpasswd 
+printf "astrodroid\nastrodroid\nn\n" | vncpasswd
 
 # enable some policy for vnc
-etc/polkit-1/localauthority/50-local.d/
+sudo cp etc/polkit-1/localauthority/50-local.d/* /etc/polkit-1/localauthority/50-local.d/
 
 # start the tigervnc
-sudo systemctl enable --now tigervncserver@:1.service
-sudo systemctl start tigervncserver@:1.service
+sudo systemctl enable --now tigervncserver@:2.service
+sudo systemctl start tigervncserver@:2.service
 ```
 
 ### NoVNC
@@ -149,12 +149,10 @@ sudo systemctl start tigervncserver@:1.service
 # provide the www-directories
 sudo rm -rf /var/www/*
 sudo mv var/www/*  /var/www/
-sudo systemctl enable novnc.service
-sudo systemctl start novnc.service
 sudo mkdir /var/log/indiweb
 
 # secure the www-directory
-sudo chown astropc.astropc /var/log/indiweb
+sudo chown odroid.odroid /var/log/indiweb
 find /var/www/ -type f -exec chmod 555 {} \;
 
 # start the web-server
@@ -179,10 +177,9 @@ sudo systemctl start novnc.service
 ### Configure Nginx
 
 ```
-sudo cp etc/nginx/sites-available/astropc /etc/nginx/sites-available/
-sudo ln -s /etc/nginx/sites-available/astropc  /etc/nginx/sites-enabled/astropc
+sudo cp etc/nginx/sites-available/astrodroid /etc/nginx/sites-available/
+sudo ln -s /etc/nginx/sites-available/astrodroid  /etc/nginx/sites-enabled/astrodroid
 sudo rm /etc/nginx/sites-enabled/default
-sudo systemctl restart nginx.service
 ```
 
 ### Create a Hotspot
@@ -197,3 +194,4 @@ sudo dpkg -i *.deb
 ```
 
 ### Reboot the node
+

@@ -1,1 +1,8 @@
-:1=astropc
+# TigerVNC User assignment
+#
+# This file assigns users to specific VNC display numbers.
+# The syntax is <display>=<username>. E.g.:
+#
+:2=astrodroid
+# :3=lisa
+

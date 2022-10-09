@@ -134,8 +134,8 @@
 #           the -geometry option. Otherwise, the fixed default provided below
 #           will be used.
 #
+# Default: $geometry = "1920x1200";
 $geometry = "1920x1080";
-
 # $depth       sets the framebuffer color depth. Must be one of 16, 24, or 32.
 # $pixelformat sets the default pixelformat.
 #              A default can be derived if the tigervncserver is run in a
@@ -181,14 +181,11 @@ $geometry = "1920x1080";
 #
 # Default: $scrapingGeometry = undef;
 
-# $rfbwait sets the maximum time in msec to wait for VNC client viewer.
-# Default: $rfbwait = "30000";
-
 # $localhost should the TigerVNC server only listen on localhost for
 #            incoming VNC connections.
 #
 # Example: $localhost = "yes";
-$localhost = "no";
+# Example: $localhost = "no";
 #
 # Default: $localhost = "yes"; # if $SecurityTypes does not contain any TLS*
 #                              #    or X509* security types or the $SecurityTypes

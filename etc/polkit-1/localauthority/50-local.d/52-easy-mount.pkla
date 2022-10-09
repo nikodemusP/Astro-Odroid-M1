@@ -1,0 +1,6 @@
+[Manage removable filesystems]
+Identity=unix-user:*
+Action=org.freedesktop.devicekit.disks.filesystem-mount;org.freedesktop.devicekit.disks.drive-eject;org.freedesktop.devicekit.disks.drive-detach;org.freedesktop.udisks2.filesystem-mount-other-seat
+ResultAny=yes
+ResultInactive=yes
+ResultActive=yes

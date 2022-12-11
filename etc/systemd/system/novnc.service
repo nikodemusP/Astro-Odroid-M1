@@ -3,8 +3,8 @@ Description="noVNC"
 After=multi-user.target tigervncserver@:1.service
 
 [Service]
-User=odroid
-ExecStart=/usr/bin/websockify --web=/var/www/novnc/ --cert=/etc/novnc/novnc.pem 8080 localhost:5902
+User=astrodroid
+ExecStart=/usr/bin/websockify --web=/var/www/novnc/ --cert=/etc/novnc/novnc.pem 8080 localhost:5901
 ExecStop=/usr/bin/pkill websockify
 Restart=on-failure
 RestartSec=3

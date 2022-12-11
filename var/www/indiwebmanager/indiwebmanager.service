@@ -1,0 +1,13 @@
+[Unit]
+Description=INDI Web Manager
+After=multi-user.target
+
+[Service]
+Type=idle
+ExecStart=/usr/bin/python3 /var/www/indiwebmanager/main.py -v -l /var/log/indiweb/indiwebmanager.log
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+

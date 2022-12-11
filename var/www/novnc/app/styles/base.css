@@ -25,7 +25,7 @@ body {
   font-family: 'Roboto Light', Arial, sans-serif;
   font-size: 16px;
   background-color: black;
-  background-image: url("../images/background.jpg");
+  background-image: url("../images/Carina_Nebula_NIRCam_Image_Webb_Space.png");
   background-repeat:no-repeat;
   background-position:top center;
   height:100%;
@@ -883,7 +883,7 @@ select:active {
 
   color: white;
   background: rgba(0, 0, 0, 0.5);
-  background-image: url("../images/background.jpg");
+  background-image: url("../images/Carina_Nebula_NIRCam_Image_Webb_Space.png");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: top center;

@@ -36,6 +36,8 @@ DEBIAN_FRONTEND=noninteractive apt-get -y install software-properties-common \
                                                   novnc \
                                                   nginx \
                                                   menulibre \
+                                                  dnsmasq-base \
+                                                  dnsmasq \
                                                   libnginx-mod-http-auth-pam \
                                                   libnginx-mod-http-dav-ext \
                                                   libnginx-mod-http-echo \
@@ -89,10 +91,10 @@ cd ..
 rm -rf virtualgps
 #
 systemctl daemon-reload
-sudo systemctl enable virtualgps.service
-sudo systemctl start virtualgps.service
-sudo systemctl enable gpsd.service
-sudo systemctl start gpsd.service
+systemctl enable virtualgps.service
+systemctl start virtualgps.service
+systemctl enable gpsd.service
+systemctl start gpsd.service
 # -------------------------------------------------------------------------
 # VNC do not start the GUI any more
 # -------------------------------------------------------------------------
@@ -105,13 +107,17 @@ cp .vnc/xstartup /home/astrodroid/.vnc/
 systemctl daemon-reload
 systemctl enable vncserver@1.service
 systemctl start vncserver@1.service
+#
+# Some Policity-Updates
+#
+cp etc/polkit-1/localauthority/50-local.d/* /etc/polkit-1/localauthority/50-local.d/
 # -------------------------------------------------------------------------
 # NO VNC
 # -------------------------------------------------------------------------
 echo "Setup NoVNC..."
-sudo rm -rf /var/www/*
-sudo mv var/www/*  /var/www/
-sudo mkdir /var/log/indiweb
+rm -rf /var/www/*
+mv var/www/*  /var/www/
+mkdir /var/log/indiweb
 chown astrodroid.astrodroid /var/log/indiweb
 find /var/www/ -type f -exec chmod 555 {} \;
 #
@@ -136,9 +142,9 @@ systemctl start novnc.service
 # Nginx
 # -----------------------------------------------------------------------
 echo "Setup Nginx..."
-sudo cp etc/nginx/sites-available/astrodroid /etc/nginx/sites-available/
-sudo ln -s /etc/nginx/sites-available/astrodroid  /etc/nginx/sites-enabled/astrodroid
-sudo rm /etc/nginx/sites-enabled/default
+cp etc/nginx/sites-available/astrodroid /etc/nginx/sites-available/
+ln -s /etc/nginx/sites-available/astrodroid  /etc/nginx/sites-enabled/astrodroid
+rm /etc/nginx/sites-enabled/default
 openssl req -x509 -nodes -newkey rsa:2048 -keyout novnc.pem -out novnc.pem -days 3650 -subj '/CN=Astrodroid/C=SK'
 #
 #

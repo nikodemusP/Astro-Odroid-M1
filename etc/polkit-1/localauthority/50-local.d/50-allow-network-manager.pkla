@@ -1,6 +1,0 @@
-[Network Manager all Users]
-Identity=unix-user:*
-Action=org.freedesktop.NetworkManager.settings.modify.system;org.freedesktop.NetworkManager.network-control
-ResultAny=no
-ResultInactive=no
-ResultActive=yes

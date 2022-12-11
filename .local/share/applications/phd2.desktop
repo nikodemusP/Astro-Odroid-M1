@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.1
+Type=Application
+Name=phd2
+GenericName=phd2
+Comment=PHD Guiding, auto-guiding of your telescope
+Icon=phd2
+Exec=phd2
+Actions=
+Categories=Astronomy;Education;Science1;
+StartupWMClass=phd2.bin

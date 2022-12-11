@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.1
+Type=Application
+Name=KStars
+GenericName=Desktop Planetarium
+Comment=Desktop Planetarium
+Icon=kstars
+Exec=kstars %U
+Actions=
+MimeType=image/fits;
+Categories=Astronomy;Education;KDE;Qt;Science1;
+StartupWMClass=kstars

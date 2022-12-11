@@ -1,0 +1,3 @@
+[Default Applications]
+inode/directory=org.gnome.Nautilus.desktop;thunar.desktop
+image/fits=org.kde.kstars1.desktop

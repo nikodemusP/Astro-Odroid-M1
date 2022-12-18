@@ -31,7 +31,8 @@ echo "Install Base-Software..."
 DEBIAN_FRONTEND=noninteractive apt-get -y install software-properties-common \
                                                   git \
                                                   cmake \
-                                                  tightvncserver \
+                                                  tigervnc-standalone-server \
+                                                  tigervnc-tools \
                                                   net-tools \
                                                   novnc \
                                                   nginx \
@@ -100,17 +101,14 @@ systemctl start gpsd.service
 # -------------------------------------------------------------------------
 echo "Setup VNC..."
 systemctl set-default multi-user.target
-cp etc/polkit-1/localauthority/50-local.d/* /etc/polkit-1/localauthority/50-local.d/
-cp etc/systemd/system/vncserver@.service /etc/systemd/system/
-cp .vnc/xstartup /home/astrodroid/.vnc/
 #
-systemctl daemon-reload
-systemctl enable vncserver@1.service
-systemctl start vncserver@1.service
-#
-# Some Policity-Updates
+# Some TigerVNC-Config and Policity-Updates
 #
 cp etc/polkit-1/localauthority/50-local.d/* /etc/polkit-1/localauthority/50-local.d/
+cp etc/tigervnc/* /etc/tigervnc/
+printf "astrodroid\nastrodroid\nn\n" | tigervncpasswd
+systemctl enable tigervncserver@:1.service
+#
 # -------------------------------------------------------------------------
 # NO VNC
 # -------------------------------------------------------------------------

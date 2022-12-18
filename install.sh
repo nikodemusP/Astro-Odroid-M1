@@ -146,6 +146,12 @@ rm /etc/nginx/sites-enabled/default
 openssl req -x509 -nodes -newkey rsa:2048 -keyout novnc.pem -out novnc.pem -days 3650 -subj '/CN=Astrodroid/C=SK'
 #
 #
+# -----------------------------------------------------------------------
+# copy tools
+# -----------------------------------------------------------------------
+mkdir /usr/share/astrotools
+cp tools/* /usr/share/astrotools
+echo "export PATH=$PATH:/usr/share/astrotools" > /etc/profile.d/astrotools.sh
 #
 echo "* Please setup login-pwd" 
 echo ""

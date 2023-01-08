@@ -1,0 +1,149 @@
+#!/bin/bash
+
+#Written by David Tate 
+#This works on my 4Pi, but use this at your own risk.
+#This script is designed to make a copy/backup of your Stellarmate Profile
+#So if you have to reimage, you can copy these file back over.
+#Assumptions: 
+#1. That you will use the Pictures Directory (just because it's accessible right-away)
+#2. The profile name will be: 'ProfileCopy'
+#3. The profile file will be zipped to: ProfileCopy.tar.gz
+#4. You must copy this file and the zipped file to a PC or some other compatible 
+#   machine prior to re-imaging your SD card
+#5. You must run this command against this script (to make it executable):
+#   sudo chmod 777 CopyProfile.sc
+
+
+#Directory/Files to copy (only items I see changed):
+#.local/share/kstars
+#.config
+#.indi
+#Note:  I do all the archive and restore from the Pictures directory because we
+#       all have access to it from PCs.
+
+
+DIR_HOME=${HOME}
+DIR_BKUP="${DIR_HOME}/Backup/ProfileCopy"
+DIR_KSTARS=${DIR_BKUP}"/kstars"
+DIR_CONFIG=${DIR_BKUP}"/config"
+DIR_INDI=${DIR_BKUP}"/indi"
+NOW=`date +"%Y%m%d_%H%M%S"`
+BKUP_FILE="${DIR_HOME}/Backup/ProfileCopy_${NOW}.tar.gz"
+mkdir -p ${DIR_HOME}/Backup
+
+
+function backup_profile
+{
+    #Check to see if the directories exist, if not, create them.
+    if [ ! -d "$DIR_BKUP" ]; then
+      mkdir ${DIR_BKUP}
+    fi
+    if [ ! -d "$DIR_KSTARS" ]; then
+      mkdir ${DIR_KSTARS}
+    fi
+    if [ ! -d "$DIR_CONFIG" ]; then
+      mkdir ${DIR_CONFIG}
+    fi
+    if [ ! -d "$DIR_INDI" ]; then
+      mkdir ${DIR_INDI}
+    fi
+
+    #Copying the kstars files
+    cp ${DIR_HOME}/.local/share/kstars/image_url.dat ${DIR_KSTARS} 2>/dev/null
+    cp ${DIR_HOME}/.local/share/kstars/mycitydb.sqlite ${DIR_KSTARS} 2>/dev/null
+    cp ${DIR_HOME}/.local/share/kstars/userdb.sqlite ${DIR_KSTARS} 2>/dev/null
+    cp ${DIR_HOME}/.local/share/kstars/wishlist.obslist ${DIR_KSTARS} 2>/dev/null
+
+    #Copying the .config directory (only the directories I see that changed)
+    cp -R ${DIR_HOME}/.config/dconf* ${DIR_CONFIG}     2>/dev/null
+    cp -R ${DIR_HOME}/.config/pluma* ${DIR_CONFIG}     2>/dev/null
+    cp -R ${DIR_HOME}/.config/session* ${DIR_CONFIG}   2>/dev/null
+    cp -R ${DIR_HOME}/.config/caja* ${DIR_CONFIG}      2>/dev/null
+    cp -R ${DIR_HOME}/.config/gtk-3.0* ${DIR_CONFIG}   2>/dev/null
+    cp ${DIR_HOME}/.config/mimeapps.list ${DIR_CONFIG} 2>/dev/null
+    cp ${DIR_HOME}/.config/kstarsrc ${DIR_CONFIG}      2>/dev/null
+
+    #Copying the .indi files
+    cp ${DIR_HOME}/.indi/*.* ${DIR_INDI}               2>/dev/null
+
+    echo Zipping...
+    tar -czf ${BKUP_FILE}  --absolute-names ${DIR_BKUP}
+    rm -r ${DIR_BKUP}
+}
+
+function restore_profile
+{
+    RESTORE_FROM_ZIP=$1
+
+    #Unzip the tar file
+    tar xfP ${RESTORE_FROM_ZIP}
+
+    if [ $? -ne 0 ]; then
+        rm -r ${DIR_BKUP}
+        exit
+    fi
+    RESTORE_FROM_DIR=${DIR_BKUP}
+    #Copying the kstars files
+    cp ${RESTORE_FROM_DIR}/kstars/image_url.dat ${DIR_HOME}/.local/share/kstars/ &
+    cp ${RESTORE_FROM_DIR}/kstars/mycitydb.sqlite ${DIR_HOME}/.local/share/kstars/ &
+    cp ${RESTORE_FROM_DIR}/kstars/userdb.sqlite ${DIR_HOME}/.local/share/kstars/ &
+    cp ${RESTORE_FROM_DIR}/kstars/wishlist.obslist ${DIR_HOME}/.local/share/kstars/ &
+
+    #Copying the .config directory (only the directories I see that changed)
+    cp -r ${RESTORE_FROM_DIR}/config/* ${DIR_HOME}/.config/ &
+
+    #Copying the .indi files
+    cp ${RESTORE_FROM_DIR}/indi/* ${DIR_HOME}/.indi/ &
+    wait
+
+    #Deleting the extracted directory
+    rm -r ${DIR_HOME}/Pictures/ProfileCopy
+}
+
+function restore_menu
+{
+    dir_list=$(ls -lhp $HOME/Backup | awk -F ' ' ' { print $9 " " $5 } ')
+    curdir=$(pwd)
+    selection=$(whiptail --title "Restore" \
+                         --menu "$curdir" 0 0 0 \
+                         --cancel-button Cancel \
+                         --ok-button Select $dir_list 3>&1 1>&2 2>&3)
+    ret=$?
+    if [ $ret -eq 1 ]; then
+       return 0
+    elif [[ -f "$selection" ]]; then
+        restore_profile $selection
+    fi
+}
+
+function main_menu
+{
+
+# source
+# https://www.raspberrypi.org/forums/viewtopic.php?t=78057
+
+clear
+RETVAL=$(whiptail --title "Make a selection and Enter" \
+--menu --nocancel "Menu Script" 10 50 4 \
+"a" "Backup profile" \
+"b" "Restore profile" \
+"c" "Quit" \
+3>&1 1>&2 2>&3)
+
+# Below you can enter the corresponding commands
+
+case $RETVAL in
+    a) backup_profile ;;
+    b) restore_menu ;;
+    c) exit;;
+    *) echo "Invalid option. Quitting";;
+esac
+}
+
+
+# Acapulco Rolf  
+# 16 February 2020
+# this alternate menu dialog uses whiptail which comes installed on raspbian by default
+# this is the same menu dialog that is used by raspi-config
+ 
+main_menu

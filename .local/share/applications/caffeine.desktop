@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.1
+Type=Application
+Name=Caffeine
+NoDisplay=true
+Comment=Temporarily deactivate the screensaver and sleep mode
+Icon=caffeine
+Exec=/usr/bin/caffeine
+Actions=
+Categories=Utility;
+Keywords=Screensaver;Power;Saving;Blank;

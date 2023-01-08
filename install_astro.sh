@@ -106,7 +106,6 @@ systemctl set-default multi-user.target
 #
 cp etc/polkit-1/localauthority/50-local.d/* /etc/polkit-1/localauthority/50-local.d/
 cp etc/tigervnc/* /etc/tigervnc/
-printf "astrodroid\nastrodroid\nn\n" | tigervncpasswd
 systemctl enable tigervncserver@:1.service
 #
 # -------------------------------------------------------------------------
@@ -153,6 +152,9 @@ mkdir /usr/share/astrotools
 cp tools/* /usr/share/astrotools
 echo "export PATH=$PATH:/usr/share/astrotools" > /etc/profile.d/astrotools.sh
 #
+echo "* set VNC-Password"
+echo "tigervncpasswd"
+echo ""
 echo "* reboot the system"
 echo "sudo reboot"
 exit 0
